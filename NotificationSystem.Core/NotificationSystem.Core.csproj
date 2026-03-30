@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NotificationSystem.Console\NotificationSystem.Console.csproj" />
-  </ItemGroup>
-
 </Project>
