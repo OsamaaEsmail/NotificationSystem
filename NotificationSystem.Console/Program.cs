@@ -1,29 +1,61 @@
-﻿using NotificationSystem.Core.Enums;
+﻿// === DEPENDENCY INVERSION ===
+
+using NotificationSystem.Core.Enums;
 using NotificationSystem.Core.Models;
+using NotificationSystem.Core.Services;
+using NotificationSystem.Core.Services.Channels;
 using NotificationSystem.Core.Services.Formatters;
 using NotificationSystem.Core.Services.Logging;
 
-// === INTERFACE SEGREGATION ===
+Console.WriteLine("\n=== DIP: NotificationService depends on interfaces ===\n");
 
-Console.WriteLine("\n=== ISP: Each interface has one job ===\n");
+// --- Send via Email ---
+Console.WriteLine("  Sending Email:");
+var emailService = new NotificationService(
+    new EmailChannel(),        // INotificationChannel
+    new EmailFormatter(),      // INotificationFormatter
+    new ConsoleNotificationLogger()  // INotificationLogger
+);
 
-// Formatter only formats — doesn't send, doesn't log
-var emailFormatter = new EmailFormatter();
-var smsFormatter = new SmsFormatter();
-var pushFormatter = new PushFormatter();
-
-var emailMsg = new NotificationMessage(
-    "sara@gmail.com",
-    "Welcome Sara",
-    "Thanks for joining us today!",
+var emailNotification = new NotificationMessage(
+    "ahmed@gmail.com",
+    "Welcome!",
+    "Thanks for joining our platform.",
     NotificationType.Email);
 
-Console.WriteLine($"  Email format: {emailFormatter.Format(emailMsg)}");
-Console.WriteLine($"  SMS format:   {smsFormatter.Format(emailMsg)}");
-Console.WriteLine($"  Push format:  {pushFormatter.Format(emailMsg)}");
+emailService.Send(emailNotification);
+Console.WriteLine($"  Status: {emailNotification.Status}");
 
-// Logger only logs — doesn't send, doesn't format
-Console.WriteLine();
-var logger = new ConsoleNotificationLogger();
-logger.Log(emailMsg, true);
-logger.Log(emailMsg, false);
+// --- Send via SMS ---
+Console.WriteLine("\n  Sending SMS:");
+var smsService = new NotificationService(
+    new SmsChannel(),
+    new SmsFormatter(),
+    new ConsoleNotificationLogger()
+);
+
+var smsNotification = new NotificationMessage(
+    "01012345678",
+    "Code",
+    "Your verification code is 5821",
+    NotificationType.Sms);
+
+smsService.Send(smsNotification);
+Console.WriteLine($"  Status: {smsNotification.Status}");
+
+// --- Send via Push ---
+Console.WriteLine("\n  Sending Push:");
+var pushService = new NotificationService(
+    new PushChannel(),
+    new PushFormatter(),
+    new ConsoleNotificationLogger()
+);
+
+var pushNotification = new NotificationMessage(
+    "device-token-abc",
+    "New Message",
+    "You have a new message from Sara",
+    NotificationType.Push);
+
+pushService.Send(pushNotification);
+Console.WriteLine($"  Status: {pushNotification.Status}");
