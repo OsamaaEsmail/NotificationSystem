@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NotificationSystem.Console/NotificationSystem.Console.csproj" />
+  <Project Path="NotificationSystem.Core/NotificationSystem.Core.csproj" Id="53cae67c-20c3-490b-853f-482b80ef54a5" />
+</Solution>
